@@ -19,6 +19,7 @@ package com.google.android.gms.samples.wallet;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -38,6 +39,14 @@ import com.google.android.gms.wallet.PaymentsClient;
 import com.google.android.gms.wallet.TransactionInfo;
 import com.google.android.gms.wallet.WalletConstants;
 
+import org.json.JSONObject;
+
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class CheckoutActivity extends Activity {
     // Arbitrarily-picked result code.
     private static final int LOAD_PAYMENT_DATA_REQUEST_CODE = 991;
@@ -47,8 +56,8 @@ public class CheckoutActivity extends Activity {
     private View mPwgButton;
     private TextView mPwgStatusText;
 
-    private ItemInfo mBikeItem = new ItemInfo("Simple Bike", 300 * 1000000, R.drawable.bike);
-    private long mShippingCost = 90 * 1000000;
+    private ItemInfo mBikeItem = new ItemInfo("Simple Bike",  10000, R.drawable.bike);
+    private long mShippingCost = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,11 +149,82 @@ public class CheckoutActivity extends Activity {
         if (token != null) {
             String billingName = paymentData.getCardInfo().getBillingAddress().getName();
             Toast.makeText(this, getString(R.string.payments_show_name, billingName), Toast.LENGTH_LONG).show();
+            final String tokenStr = token.getToken();
+            new Thread(new Runnable() {
+                public void run() {
+                    postToken(getPublicKeyHash(),getBase64Blob(tokenStr));
+                };
 
+            }).start();
             // Use token.getToken() to get the token string.
             Log.d("PaymentData", "PaymentMethodToken received");
         }
     }
+    private String getBase64Blob(String token) {
+        byte[] encodedTokenBytes = Base64.encode(token.getBytes(), Base64.NO_WRAP);
+        String encodedToken = new String(encodedTokenBytes);
+        return encodedToken;
+        //return new String(encoded);
+    }
+
+    private String getPublicKeyHash() {
+        MessageDigest digest = null;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        byte[] publicKeyHash;
+        byte[] pubKeyBytes = Base64.decode(Constants.DIRECT_TOKENIZATION_PUBLIC_KEY, Base64.NO_WRAP);
+        publicKeyHash = digest.digest(pubKeyBytes);
+        String publicKeyHashString = new String(Base64.encode(publicKeyHash, Base64.NO_WRAP));
+        return publicKeyHashString;
+    }
+
+    protected void postToken(String... params) {
+
+        HttpURLConnection conn = null;
+        URL url = null;
+        try {
+            url = new URL("http://192.168.22.26:9090/androidPay"); //in the real code, there is an ip and a port
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(3000);//连接的超时时间
+            conn.setReadTimeout(5000);
+            conn.setUseCaches(false);//不使用缓存
+            conn.setRequestMethod("POST");
+
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+            //conn.connect();
+
+            JSONObject jsonParam = new JSONObject();
+            jsonParam.put("publicKeyHash", params[0]);
+            jsonParam.put("version", "1.0");
+            jsonParam.put("data", params[1]);
+
+            Log.i("JSON", jsonParam.toString());
+            //androidPayBlobView.setText(jsonParam.toString());
+            OutputStream out = conn.getOutputStream();// 获得一个输出流,向服务器写数据
+            out.write(jsonParam.toString().getBytes());
+            out.flush();
+            //out.close();
+
+//            Log.i("STATUS", String.valueOf(conn.getResponseCode()));
+//            Log.i("MSG" , conn.getResponseMessage());
+            if(conn.getResponseCode()==HttpURLConnection.HTTP_OK) {
+                Log.i("success", "123");
+            }else{
+                Log.i("fail","123");
+            }
+            //conn.disconnect();
+
+        } catch (Exception e) {
+
+        }
+    }
+
+
 
     private void handleError(int statusCode) {
         // At this stage, the user has already seen a popup informing them an error occurred.
@@ -164,7 +244,7 @@ public class CheckoutActivity extends Activity {
         String price = PaymentsUtil.microsToString(mBikeItem.getPriceMicros() + mShippingCost);
 
         TransactionInfo transaction = PaymentsUtil.createTransaction(price);
-        PaymentDataRequest request = PaymentsUtil.createPaymentDataRequest(transaction);
+        PaymentDataRequest request = PaymentsUtil.createPaymentDataRequestDirect(transaction);
         Task<PaymentData> futurePaymentData = mPaymentsClient.loadPaymentData(request);
 
         // Since loadPaymentData may show the UI asking the user to select a payment method, we use

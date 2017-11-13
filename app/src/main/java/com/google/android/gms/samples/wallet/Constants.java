@@ -41,16 +41,16 @@ public class Constants {
     // 5.  If you're using direct integration, please consult the documentation to learn about
     //     next steps.
     static {
-        if (true) {
-            throw new RuntimeException("[REMOVE ME] Please edit the Constants.java file per the"
-                    + " instructions inside before trying to run this sample.");
-        }
+//        if (true) {
+//            throw new RuntimeException("[REMOVE ME] Please edit the Constants.java file per the"
+//                    + " instructions inside before trying to run this sample.");
+//        }
     }
 
     // Changing this to ENVIRONMENT_PRODUCTION will make the API return real card information.
     // Please refer to the documentation to read about the required steps needed to enable
     // ENVIRONMENT_PRODUCTION.
-    public static final int PAYMENTS_ENVIRONMENT = WalletConstants.ENVIRONMENT_TEST;
+    public static final int PAYMENTS_ENVIRONMENT = WalletConstants.ENVIRONMENT_PRODUCTION;
 
     // The allowed networks to be requested from the API. If the user has cards from networks not
     // specified here in their account, these will not be offered for them to choose in the popup.
@@ -73,7 +73,7 @@ public class Constants {
     );
 
     // Required by the API, but not visible to the user.
-    public static final String CURRENCY_CODE = "USD";
+    public static final String CURRENCY_CODE = "HKD";
 
     // Supported countries for shipping (use ISO 3166-1 alpha-2 country codes).
     // Relevant only when requesting a shipping address.
@@ -84,15 +84,15 @@ public class Constants {
 
     // The name of your payment processor / gateway. Please refer to their documentation for
     // more information.
-    public static final String GATEWAY_TOKENIZATION_NAME = "REPLACE_ME";
+    //public static final String GATEWAY_TOKENIZATION_NAME = "REPLACE_ME";
 
     // Custom parameters required by the processor / gateway.
     // In many cases, your processor / gateway will only require a gatewayMerchantId.
     // Please refer to your processor's documentation for more information. The number of parameters
     // required and their names vary depending on the processor.
-    public static final List<Pair<String, String>> GATEWAY_TOKENIZATION_PARAMETERS = Arrays.asList(
-            Pair.create("gatewayMerchantId", "REPLACE_ME")
-    );
+//    public static final List<Pair<String, String>> GATEWAY_TOKENIZATION_PARAMETERS = Arrays.asList(
+//            Pair.create("gatewayMerchantId", "REPLACE_ME")
+//    );
 
     // Example configuration when using Stripe as processor.
     //public static final String GATEWAY_TOKENIZATION_NAME = "stripe";
@@ -102,7 +102,7 @@ public class Constants {
     //);
 
     // Only used for DIRECT tokenization. Can be removed when using GATEWAY tokenization.
-    public static final String DIRECT_TOKENIZATION_PUBLIC_KEY = "REPLACE_ME";
+    public static final String DIRECT_TOKENIZATION_PUBLIC_KEY = "BAZTUT70zPHncVGAAtQiRg8YZ3g7+wLTxdqw1Gmp8bxeZk+ND5j49uonRkWoW3Tc34BIwD0FoTqtf8t1KBvXC/8=";
 
     private Constants() {
     }

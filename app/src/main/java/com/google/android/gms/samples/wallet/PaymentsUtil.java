@@ -55,6 +55,7 @@ public class PaymentsUtil {
     public static PaymentsClient createPaymentsClient(Activity activity) {
         Wallet.WalletOptions walletOptions = new Wallet.WalletOptions.Builder()
                 .setEnvironment(Constants.PAYMENTS_ENVIRONMENT)
+
                 .build();
         return Wallet.getPaymentsClient(activity, walletOptions);
     }
@@ -64,18 +65,18 @@ public class PaymentsUtil {
      *
      * @param transactionInfo contains the price for this transaction.
      */
-    public static PaymentDataRequest createPaymentDataRequest(TransactionInfo transactionInfo) {
-        PaymentMethodTokenizationParameters.Builder paramsBuilder =
-                PaymentMethodTokenizationParameters.newBuilder()
-                        .setPaymentMethodTokenizationType(
-                                WalletConstants.PAYMENT_METHOD_TOKENIZATION_TYPE_PAYMENT_GATEWAY)
-                        .addParameter("gateway", Constants.GATEWAY_TOKENIZATION_NAME);
-        for (Pair<String, String> param : Constants.GATEWAY_TOKENIZATION_PARAMETERS) {
-            paramsBuilder.addParameter(param.first, param.second);
-        }
-
-        return createPaymentDataRequest(transactionInfo, paramsBuilder.build());
-    }
+//    public static PaymentDataRequest createPaymentDataRequest(TransactionInfo transactionInfo) {
+//        PaymentMethodTokenizationParameters.Builder paramsBuilder =
+//                PaymentMethodTokenizationParameters.newBuilder()
+//                        .setPaymentMethodTokenizationType(
+//                                WalletConstants.PAYMENT_METHOD_TOKENIZATION_TYPE_PAYMENT_GATEWAY)
+//                        .addParameter("gateway", Constants.GATEWAY_TOKENIZATION_NAME);
+//        for (Pair<String, String> param : Constants.GATEWAY_TOKENIZATION_PARAMETERS) {
+//            paramsBuilder.addParameter(param.first, param.second);
+//        }
+//
+//        return createPaymentDataRequest(transactionInfo, paramsBuilder.build());
+//    }
 
     /**
      * Builds {@link PaymentDataRequest} for use with DIRECT integration to be consumed by

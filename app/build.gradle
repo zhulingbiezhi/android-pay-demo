@@ -1,0 +1,42 @@
+apply plugin: 'com.android.application'
+
+android {
+    signingConfigs {
+        debug {
+            keyAlias 'bindo'
+            keyPassword '123456'
+            storeFile file('/Users/huhai/work/lic/androidPay.jks')
+            storePassword '123456'
+        }
+    }
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "com.google.android.gms.samples.wallet"
+
+        // Google Payment API is not supported in SDK versions lower than 19
+        minSdkVersion 19
+
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            shrinkResources true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.google.android.gms:play-services:11.4.2'
+    compile 'com.google.android.gms:play-services-wallet:11.4.2'
+    compile 'com.android.support:support-v4:24.1.1'
+    compile 'com.android.support:appcompat-v7:24.1.1'
+    // "wallet" is the only module needed for the Google Payment API and this sample app.
+    // Apps that selectively compile Google Play service APIs need only this dependency.
+    //compile 'com.google.android.gms:play-services-wallet:11.4.2'
+}
+//apply plugin: 'com.google.gms.google-services'

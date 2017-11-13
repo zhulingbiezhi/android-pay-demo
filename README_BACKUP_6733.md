@@ -1,7 +1,7 @@
+<<<<<<< HEAD
 # android-pay-demo
 android code for android pay
-
-
+=======
 # Google Payment API sample app
 
 ## Overview
@@ -33,3 +33,4 @@ To be able to fully test the API, you will also need to:
 -   [Add a payment method to your Google Account](https://support.google.com/payments/answer/6220309).
 -   [Install and add a payment method to Android Pay](https://support.google.com/androidpay/answer/6289372) (optional).
 -   Consult your payment processor's documentation to learn about whether they support paying with Google.
+>>>>>>> master
